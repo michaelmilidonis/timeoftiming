@@ -3,116 +3,151 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Humanumeria - Sync Clock</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Synchronicity Clock</title>
+  <link rel="stylesheet" href="styles.css" />
   <style>
     body {
-      background-color: black;
-      color: white;
-      font-family: Arial, sans-serif;
+      margin: 0;
+      font-family: 'Courier New', monospace;
+      background-color: #ffffff;
+      color: #111;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.2rem;
+    }
+
+    p.description {
+      font-size: 1rem;
+      max-width: 700px;
       text-align: center;
-      padding: 40px 20px;
+      margin-bottom: 2rem;
     }
 
-    .logo {
-      max-width: 200px;
-      margin-bottom: 20px;
-    }
-
-    .subtitle {
-      font-size: 1.2em;
-      margin-bottom: 30px;
-    }
-
-    .clock-container {
-      font-size: 3em;
-      margin: 30px auto;
-    }
-
-    #sync-pair {
+    #pair {
+      font-size: 4rem;
       font-weight: bold;
-      color: white;
-    }
-
-    #freeze-btn {
-      background-color: #222;
-      color: white;
-      border: 2px solid white;
-      padding: 10px 20px;
-      font-size: 1em;
-      margin-top: 20px;
-      cursor: pointer;
+      margin: 1rem 0;
+      padding: 0.5rem 1rem;
+      border: 2px dashed #111;
       border-radius: 8px;
     }
 
-    #freeze-btn:disabled {
-      opacity: 0.6;
-      cursor: default;
+    .btn {
+      background-color: #111;
+      color: #fff;
+      border: none;
+      padding: 0.7rem 1.2rem;
+      margin: 0.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
     }
 
-    .subscriber-link {
-      margin-top: 30px;
-      font-size: 1em;
+    .btn:hover {
+      background-color: #333;
     }
 
-    .subscriber-link a {
-      color: #00ffff;
-      text-decoration: underline;
+    form {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    input, textarea {
+      padding: 0.6rem;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: 1px solid #aaa;
+    }
+
+    #chat-log {
+      margin-top: 2rem;
+      max-width: 600px;
+      width: 100%;
+      background-color: #f3f3f3;
+      border-radius: 10px;
+      padding: 1rem;
+      overflow-y: auto;
+      max-height: 300px;
+    }
+
+    .chat-message {
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
-  <div class="landing">
-    <img src="Untitled_design__1_-removebg-preview.png" alt="Humanumeria Logo" class="logo" />
-    <h1>Humanumeria Sync Clock</h1>
-    <p class="subtitle">Live Universal Pair Counter</p>
+  <h1>⏳ Synchronicity Clock</h1>
+  <p class="description">
+    Welcome to the Humanumeria Sync Clock — a live universal number generator. Each two-digit pair you see is a synchronicity moment. You can freeze your screen and share what happened during your moment. The more syncs we gather, the more we understand the universal language of numbers.
+  </p>
 
-    <div class="clock-container">
-      <div id="sync-pair">--</div>
-      <button id="freeze-btn">Freeze</button>
-    </div>
+  <div id="pair">--</div>
 
-    <p class="subscriber-link">
-      Back to <a href="index.html">Landing Page</a>
-    </p>
-  </div>
+  <button class="btn" onclick="freezeClock()">🔒 Freeze</button>
+  <button class="btn" onclick="window.location.href='index.html'">⬅ Back to Landing</button>
+
+  <form id="factForm" onsubmit="submitFact(event)">
+    <input type="text" id="name" placeholder="Name or Alias (optional)" />
+    <input type="text" id="location" placeholder="City, Country (optional)" />
+    <input type="text" id="fact" placeholder="One-word Fact (required)" required />
+    <textarea id="comment" placeholder="Describe your synchronicity..." rows="3"></textarea>
+    <button type="submit" class="btn">📤 Share Synchronicity</button>
+  </form>
+
+  <div id="chat-log"></div>
 
   <script>
-    let first = 11;
-    let currentPair = first;
+    let pairElement = document.getElementById("pair");
     let frozen = false;
+    let chatLog = document.getElementById("chat-log");
 
-    function incrementPair(pair) {
-      let tens = Math.floor(pair / 10);
-      let ones = pair % 10;
-
-      if (ones < 9) ones++;
-      else {
-        ones = 1;
-        if (tens < 9) tens++;
-        else tens = 1;
-      }
-
-      return tens * 10 + ones;
+    function getCurrentPair() {
+      const now = new Date();
+      const seconds = Math.floor(now.getTime() / 1000);
+      const offset = 0; // days since Jan 1 could go here
+      const total = seconds + offset;
+      const number = 11 + (total % 89);
+      return number < 100 ? number : 11;
     }
-
-    const syncDisplay = document.getElementById("sync-pair");
-    const freezeBtn = document.getElementById("freeze-btn");
 
     function updateClock() {
       if (!frozen) {
-        syncDisplay.textContent = currentPair;
-        currentPair = incrementPair(currentPair);
+        pairElement.textContent = getCurrentPair();
       }
     }
 
-    setInterval(updateClock, 100);
-
-    freezeBtn.addEventListener("click", () => {
+    function freezeClock() {
       frozen = true;
-      freezeBtn.disabled = true;
-      freezeBtn.textContent = "Frozen";
-    });
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function submitFact(e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value || "Anonymous";
+      const location = document.getElementById("location").value;
+      const fact = document.getElementById("fact").value;
+      const comment = document.getElementById("comment").value;
+      const sync = pairElement.textContent;
+
+      const message = `<div class='chat-message'><strong>${name}</strong> (${location || "Unknown"}) at pair <strong>${sync}</strong>: <em>${fact}</em><br>${comment}</div>`;
+      chatLog.innerHTML = message + chatLog.innerHTML;
+
+      document.getElementById("factForm").reset();
+    }
   </script>
 </body>
 </html>
