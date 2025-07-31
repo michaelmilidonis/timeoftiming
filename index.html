@@ -3,58 +3,116 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Time of Timing</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Humanumeria - Time of Timing</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
-    .micro-sync {
-      font-size: 2rem;
+    body {
+      background-color: black;
       color: white;
-      font-family: monospace;
+      font-family: Arial, sans-serif;
       text-align: center;
-      margin-top: 2rem;
+      padding: 40px 20px;
     }
-    .sync-label {
-      text-align: center;
-      font-size: 1.2rem;
-      color: #ccc;
+
+    .logo {
+      max-width: 200px;
+      margin-bottom: 20px;
+    }
+
+    .subtitle {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+    }
+
+    .clock-container {
+      font-size: 3em;
+      margin: 30px auto;
+    }
+
+    #sync-pair {
+      font-weight: bold;
+      color: white;
+    }
+
+    #freeze-btn {
+      background-color: #222;
+      color: white;
+      border: 2px solid white;
+      padding: 10px 20px;
+      font-size: 1em;
+      margin-top: 20px;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+
+    #freeze-btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    .subscriber-link {
+      margin-top: 30px;
+      font-size: 1em;
+    }
+
+    .subscriber-link a {
+      color: #00ffff;
+      text-decoration: underline;
     }
   </style>
 </head>
-<body class="dark-theme">
-  <div class="container">
-    <img src="Untitled_design__1_-removebg-preview.png" alt="Time of Timing Logo" style="max-width: 200px; display: block; margin: 0 auto 2rem;">
-    <h1>Welcome to Time of Timing</h1>
-    <p>This is the Global Universal Clock — the Synchronicity Clock — built from the ancient map of numbers and aligned with all realities.</p>
-    <p>Numbers around you — from street signs to birth dates — are all part of a divine synchronicity system. This project allows you to experience this synchronicity through our living clock.</p>
-    <p>Join our community experiment to understand synchronicity in everyday life. Members gain access to the Synchronicity Clock and insights from collective research.</p>
+<body>
+  <div class="landing">
+    <img src="Untitled_design__1_-removebg-preview.png" alt="Humanumeria Logo" class="logo" />
+    <h1>Welcome to Humanumeria</h1>
+    <p class="subtitle">Where Time Speaks in Numbers</p>
 
-    <a href="subscribe.html" class="button">Subscribe & Join the Experiment</a>
+    <div class="clock-container">
+      <div id="sync-pair">--</div>
+      <button id="freeze-btn">Freeze</button>
+    </div>
 
-    <p>Already a member? <a href="clock.html">Go to the Synchronicity Clock →</a></p>
-
-    <div class="micro-sync" id="syncDisplay">11</div>
-    <div class="sync-label">Now Syncing…</div>
+    <p class="subscriber-link">
+      Are you a subscriber? <a href="sync-clock.html">Go to Full Sync Clock</a>
+    </p>
   </div>
 
   <script>
-    const syncDisplay = document.getElementById('syncDisplay');
-    const syncPairs = [];
-    for (let i = 11; i <= 99; i++) {
-      const firstDigit = Math.floor(i / 10);
-      const secondDigit = i % 10;
-      if (firstDigit > 0 && secondDigit > 0) {
-        syncPairs.push(i);
+    let first = 11;
+    let currentPair = first;
+    let frozen = false;
+
+    function incrementPair(pair) {
+      let tens = Math.floor(pair / 10);
+      let ones = pair % 10;
+
+      if (ones < 9) ones++;
+      else {
+        ones = 1;
+        if (tens < 9) tens++;
+        else tens = 1;
+      }
+
+      return tens * 10 + ones;
+    }
+
+    const syncDisplay = document.getElementById("sync-pair");
+    const freezeBtn = document.getElementById("freeze-btn");
+
+    function updateClock() {
+      if (!frozen) {
+        syncDisplay.textContent = currentPair;
+        currentPair = incrementPair(currentPair);
       }
     }
 
-    let currentIndex = 0;
-    function updateSyncDisplay() {
-      const pair = syncPairs[currentIndex];
-      const formatted = pair.toString();
-      syncDisplay.textContent = formatted;
-      currentIndex = (currentIndex + 1) % syncPairs.length;
-    }
-    setInterval(updateSyncDisplay, 150);
+    setInterval(updateClock, 100);
+
+    freezeBtn.addEventListener("click", () => {
+      frozen = true;
+      freezeBtn.disabled = true;
+      freezeBtn.textContent = "Frozen";
+    });
   </script>
 </body>
 </html>
