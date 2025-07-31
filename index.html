@@ -3,58 +3,69 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Time of Timing</title>
-  <link rel="stylesheet" href="styles.css" />
-  <style>
-    .micro-sync {
-      font-size: 2rem;
-      color: white;
-      font-family: monospace;
-      text-align: center;
-      margin-top: 2rem;
-    }
-    .sync-label {
-      text-align: center;
-      font-size: 1.2rem;
-      color: #ccc;
-    }
-  </style>
+  <title>Humanumeria Sync Clock</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body class="dark-theme">
-  <div class="container">
-    <img src="Untitled_design__1_-removebg-preview.png" alt="Time of Timing Logo" style="max-width: 200px; display: block; margin: 0 auto 2rem;">
-    <h1>Welcome to Time of Timing</h1>
-    <p>This is the Global Universal Clock — the Synchronicity Clock — built from the ancient map of numbers and aligned with all realities.</p>
-    <p>Numbers around you — from street signs to birth dates — are all part of a divine synchronicity system. This project allows you to experience this synchronicity through our living clock.</p>
-    <p>Join our community experiment to understand synchronicity in everyday life. Members gain access to the Synchronicity Clock and insights from collective research.</p>
+<body>
+  <div class="landing">
+    <img src="Untitled_design__1_-removebg-preview.png" alt="Humanumeria Logo" class="logo" />
+    <h1>Welcome to Humanumeria</h1>
+    <p class="subtitle">Where Time Speaks in Numbers</p>
 
-    <a href="subscribe.html" class="button">Subscribe & Join the Experiment</a>
+    <div class="clock-container">
+      <div id="sync-pair" class="sync-pair">--</div>
+    </div>
 
-    <p>Already a member? <a href="clock.html">Go to the Synchronicity Clock →</a></p>
-
-    <div class="micro-sync" id="syncDisplay">11</div>
-    <div class="sync-label">Now Syncing…</div>
+    <button id="freeze-btn" class="freeze-button">Freeze Your Sync</button>
+    <p id="freeze-status" class="freeze-status"></p>
   </div>
 
   <script>
-    const syncDisplay = document.getElementById('syncDisplay');
-    const syncPairs = [];
-    for (let i = 11; i <= 99; i++) {
-      const firstDigit = Math.floor(i / 10);
-      const secondDigit = i % 10;
-      if (firstDigit > 0 && secondDigit > 0) {
-        syncPairs.push(i);
+    // Clock Logic
+    let first = 11;
+
+    function incrementPair(pair) {
+      let tens = Math.floor(pair / 10);
+      let ones = pair % 10;
+
+      if (ones < 9) ones++;
+      else {
+        ones = 1;
+        if (tens < 9) tens++;
+        else tens = 1;
       }
+
+      return tens * 10 + ones;
     }
 
-    let currentIndex = 0;
-    function updateSyncDisplay() {
-      const pair = syncPairs[currentIndex];
-      const formatted = pair.toString();
-      syncDisplay.textContent = formatted;
-      currentIndex = (currentIndex + 1) % syncPairs.length;
+    const syncDisplay = document.getElementById("sync-pair");
+    let currentPair = first;
+    
+    function updateClock() {
+      syncDisplay.textContent = currentPair;
+      currentPair = incrementPair(currentPair);
     }
-    setInterval(updateSyncDisplay, 150);
+
+    setInterval(updateClock, 100);
+
+    // Freeze Button
+    const freezeBtn = document.getElementById("freeze-btn");
+    const freezeStatus = document.getElementById("freeze-status");
+
+    const hasFrozen = localStorage.getItem("frozenSync") !== null;
+    if (hasFrozen) {
+      freezeBtn.disabled = true;
+      freezeStatus.textContent = `You have already frozen your sync: ${localStorage.getItem("frozenSync")}`;
+    }
+
+    freezeBtn.addEventListener("click", () => {
+      if (!hasFrozen) {
+        const frozen = syncDisplay.textContent;
+        localStorage.setItem("frozenSync", frozen);
+        freezeStatus.textContent = `Your sync was frozen at: ${frozen}`;
+        freezeBtn.disabled = true;
+      }
+    });
   </script>
 </body>
 </html>
