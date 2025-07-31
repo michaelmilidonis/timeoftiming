@@ -3,27 +3,48 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Humanumeria Sync Clock</title>
+  <title>Synchronicity Clock</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background-color: #ffffff;
+      color: #000000;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .logo {
+      max-width: 150px;
+      margin-bottom: 20px;
+    }
+    .sync-clock-container {
+      text-align: center;
+    }
+    .sync-pair {
+      font-size: 64px;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+    .freeze-btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <div class="landing">
-    <img src="Untitled_design__1_-removebg-preview.png" alt="Humanumeria Logo" class="logo" />
-    <h1>Welcome to Humanumeria</h1>
-    <p class="subtitle">Where Time Speaks in Numbers</p>
-
-    <div class="clock-container">
-      <div id="sync-pair" class="sync-pair">--</div>
-      <button id="freeze-btn">Freeze</button>
-    </div>
-
-    <p class="subscriber-link">
-      Are you a subscriber? <a href="sync-clock.html">Go to Full Sync Clock</a>
-    </p>
+  <img src="Untitled_design__1_-removebg-preview.png" alt="Humanumeria Logo" class="logo" />
+  <h1>Synchronicity Clock</h1>
+  <div class="sync-clock-container">
+    <div id="sync-pair" class="sync-pair">--</div>
+    <button id="freeze-btn" class="freeze-btn">Freeze</button>
   </div>
 
   <script>
-    // Clock Logic
     let first = 11;
     let currentPair = first;
     let frozen = false;
@@ -55,9 +76,8 @@
     setInterval(updateClock, 100);
 
     freezeBtn.addEventListener("click", () => {
-      frozen = true;
-      freezeBtn.disabled = true;
-      freezeBtn.textContent = "Frozen";
+      frozen = !frozen;
+      freezeBtn.textContent = frozen ? "Unfreeze" : "Freeze";
     });
   </script>
 </body>
