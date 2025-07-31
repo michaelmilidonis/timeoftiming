@@ -14,15 +14,19 @@
 
     <div class="clock-container">
       <div id="sync-pair" class="sync-pair">--</div>
+      <button id="freeze-btn">Freeze</button>
     </div>
 
-    <button id="freeze-btn" class="freeze-button">Freeze Your Sync</button>
-    <p id="freeze-status" class="freeze-status"></p>
+    <p class="subscriber-link">
+      Are you a subscriber? <a href="sync-clock.html">Go to Full Sync Clock</a>
+    </p>
   </div>
 
   <script>
     // Clock Logic
     let first = 11;
+    let currentPair = first;
+    let frozen = false;
 
     function incrementPair(pair) {
       let tens = Math.floor(pair / 10);
@@ -39,32 +43,21 @@
     }
 
     const syncDisplay = document.getElementById("sync-pair");
-    let currentPair = first;
-    
+    const freezeBtn = document.getElementById("freeze-btn");
+
     function updateClock() {
-      syncDisplay.textContent = currentPair;
-      currentPair = incrementPair(currentPair);
+      if (!frozen) {
+        syncDisplay.textContent = currentPair;
+        currentPair = incrementPair(currentPair);
+      }
     }
 
     setInterval(updateClock, 100);
 
-    // Freeze Button
-    const freezeBtn = document.getElementById("freeze-btn");
-    const freezeStatus = document.getElementById("freeze-status");
-
-    const hasFrozen = localStorage.getItem("frozenSync") !== null;
-    if (hasFrozen) {
-      freezeBtn.disabled = true;
-      freezeStatus.textContent = `You have already frozen your sync: ${localStorage.getItem("frozenSync")}`;
-    }
-
     freezeBtn.addEventListener("click", () => {
-      if (!hasFrozen) {
-        const frozen = syncDisplay.textContent;
-        localStorage.setItem("frozenSync", frozen);
-        freezeStatus.textContent = `Your sync was frozen at: ${frozen}`;
-        freezeBtn.disabled = true;
-      }
+      frozen = true;
+      freezeBtn.disabled = true;
+      freezeBtn.textContent = "Frozen";
     });
   </script>
 </body>
