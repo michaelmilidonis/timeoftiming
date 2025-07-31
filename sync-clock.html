@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Humanumeria - Sync Clock</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .logo {
+      max-width: 200px;
+      margin-bottom: 20px;
+    }
+
+    .subtitle {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+    }
+
+    .clock-container {
+      font-size: 3em;
+      margin: 30px auto;
+    }
+
+    #sync-pair {
+      font-weight: bold;
+      color: white;
+    }
+
+    #freeze-btn {
+      background-color: #222;
+      color: white;
+      border: 2px solid white;
+      padding: 10px 20px;
+      font-size: 1em;
+      margin-top: 20px;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+
+    #freeze-btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    .subscriber-link {
+      margin-top: 30px;
+      font-size: 1em;
+    }
+
+    .subscriber-link a {
+      color: #00ffff;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="landing">
+    <img src="Untitled_design__1_-removebg-preview.png" alt="Humanumeria Logo" class="logo" />
+    <h1>Humanumeria Sync Clock</h1>
+    <p class="subtitle">Live Universal Pair Counter</p>
+
+    <div class="clock-container">
+      <div id="sync-pair">--</div>
+      <button id="freeze-btn">Freeze</button>
+    </div>
+
+    <p class="subscriber-link">
+      Back to <a href="index.html">Landing Page</a>
+    </p>
+  </div>
+
+  <script>
+    let first = 11;
+    let currentPair = first;
+    let frozen = false;
+
+    function incrementPair(pair) {
+      let tens = Math.floor(pair / 10);
+      let ones = pair % 10;
+
+      if (ones < 9) ones++;
+      else {
+        ones = 1;
+        if (tens < 9) tens++;
+        else tens = 1;
+      }
+
+      return tens * 10 + ones;
+    }
+
+    const syncDisplay = document.getElementById("sync-pair");
+    const freezeBtn = document.getElementById("freeze-btn");
+
+    function updateClock() {
+      if (!frozen) {
+        syncDisplay.textContent = currentPair;
+        currentPair = incrementPair(currentPair);
+      }
+    }
+
+    setInterval(updateClock, 100);
+
+    freezeBtn.addEventListener("click", () => {
+      frozen = true;
+      freezeBtn.disabled = true;
+      freezeBtn.textContent = "Frozen";
+    });
+  </script>
+</body>
+</html>
