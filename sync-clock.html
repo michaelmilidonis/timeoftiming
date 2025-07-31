@@ -3,150 +3,179 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Synchronicity Clock</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Synchronicity Clock - Light Version</title>
   <style>
     body {
-      margin: 0;
-      font-family: 'Courier New', monospace;
       background-color: #ffffff;
-      color: #111;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      padding: 2rem;
+      color: #111111;
+      font-family: 'Courier New', monospace;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .logo {
+      max-width: 180px;
+      margin-bottom: 20px;
     }
 
     h1 {
-      font-size: 2.2rem;
-      margin-bottom: 0.2rem;
+      font-size: 2.4em;
+      margin-bottom: 10px;
+      color: #333;
     }
 
-    p.description {
-      font-size: 1rem;
-      max-width: 700px;
-      text-align: center;
-      margin-bottom: 2rem;
+    .subtitle {
+      font-size: 1.2em;
+      color: #555;
+      margin-bottom: 30px;
     }
 
-    #pair {
-      font-size: 4rem;
+    .clock-container {
+      font-size: 2.4em;
       font-weight: bold;
-      margin: 1rem 0;
-      padding: 0.5rem 1rem;
-      border: 2px dashed #111;
-      border-radius: 8px;
+      color: #000;
+      margin: 20px auto 30px auto;
+      word-break: break-word;
     }
 
-    .btn {
-      background-color: #111;
-      color: #fff;
+    #freeze-btn {
+      background-color: #222;
+      color: white;
       border: none;
-      padding: 0.7rem 1.2rem;
-      margin: 0.5rem;
-      border-radius: 6px;
+      padding: 12px 24px;
+      font-size: 1em;
       cursor: pointer;
-      font-size: 1rem;
+      border-radius: 6px;
+      margin-bottom: 30px;
     }
 
-    .btn:hover {
-      background-color: #333;
+    #freeze-btn:disabled {
+      background-color: #888;
+      cursor: not-allowed;
     }
 
-    form {
-      margin-top: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      max-width: 500px;
-      width: 100%;
+    .chat-box {
+      margin-top: 40px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+    }
+
+    .chat-box h3 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .chat-entry {
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+    }
+
+    .library {
+      margin-top: 60px;
+      font-size: 0.9em;
+      color: #888;
     }
 
     input, textarea {
-      padding: 0.6rem;
-      font-size: 1rem;
-      border-radius: 5px;
-      border: 1px solid #aaa;
-    }
-
-    #chat-log {
-      margin-top: 2rem;
-      max-width: 600px;
       width: 100%;
-      background-color: #f3f3f3;
-      border-radius: 10px;
-      padding: 1rem;
-      overflow-y: auto;
-      max-height: 300px;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
 
-    .chat-message {
-      margin-bottom: 1rem;
-      font-size: 0.9rem;
+    button.submit-btn {
+      background-color: #000;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <h1>⏳ Synchronicity Clock</h1>
-  <p class="description">
-    Welcome to the Humanumeria Sync Clock — a live universal number generator. Each two-digit pair you see is a synchronicity moment. You can freeze your screen and share what happened during your moment. The more syncs we gather, the more we understand the universal language of numbers.
-  </p>
+  <img src="Untitled_design__1_-removebg-preview.png" alt="Humanumeria Logo" class="logo" />
+  <h1>Synchronicity Clock</h1>
+  <p class="subtitle">Catch your synch — share your moment</p>
 
-  <div id="pair">--</div>
+  <div class="clock-container" id="clock-sequence"></div>
+  <button id="freeze-btn">Freeze</button>
 
-  <button class="btn" onclick="freezeClock()">🔒 Freeze</button>
-  <button class="btn" onclick="window.location.href='index.html'">⬅ Back to Landing</button>
+  <div class="chat-box">
+    <h3>Share Your Sync</h3>
+    <input type="text" id="name" placeholder="Your name" />
+    <input type="text" id="location" placeholder="City, Country" />
+    <input type="text" id="fact" placeholder="One-word fact (e.g., love, job, etc.)" />
+    <textarea id="comment" placeholder="Tell us what happened..."></textarea>
+    <button class="submit-btn" onclick="submitComment()">Submit</button>
+    <div id="chat-log"></div>
+  </div>
 
-  <form id="factForm" onsubmit="submitFact(event)">
-    <input type="text" id="name" placeholder="Name or Alias (optional)" />
-    <input type="text" id="location" placeholder="City, Country (optional)" />
-    <input type="text" id="fact" placeholder="One-word Fact (required)" required />
-    <textarea id="comment" placeholder="Describe your synchronicity..." rows="3"></textarea>
-    <button type="submit" class="btn">📤 Share Synchronicity</button>
-  </form>
-
-  <div id="chat-log"></div>
+  <div class="library">
+    <p>This tool captures real-life synchronicities with proof of time and location.</p>
+    <p>Use it to discover the number language that shapes our lives.</p>
+  </div>
 
   <script>
-    let pairElement = document.getElementById("pair");
+    let syncPairs = [11];
     let frozen = false;
-    let chatLog = document.getElementById("chat-log");
 
-    function getCurrentPair() {
-      const now = new Date();
-      const seconds = Math.floor(now.getTime() / 1000);
-      const offset = 0; // days since Jan 1 could go here
-      const total = seconds + offset;
-      const number = 11 + (total % 89);
-      return number < 100 ? number : 11;
-    }
+    function incrementPair(pair) {
+      let tens = Math.floor(pair / 10);
+      let ones = pair % 10;
 
-    function updateClock() {
-      if (!frozen) {
-        pairElement.textContent = getCurrentPair();
+      if (ones < 9) ones++;
+      else {
+        ones = 1;
+        if (tens < 9) tens++;
+        else tens = 1;
       }
+
+      return tens * 10 + ones;
     }
 
-    function freezeClock() {
+    function updateSyncClock() {
+      if (frozen) return;
+
+      for (let i = 0; i < syncPairs.length; i++) {
+        syncPairs[i] = incrementPair(syncPairs[i]);
+      }
+
+      if (syncPairs[syncPairs.length - 1] === 99) {
+        syncPairs.push(11);
+      }
+
+      document.getElementById("clock-sequence").textContent = syncPairs.join(":");
+    }
+
+    setInterval(updateSyncClock, 150);
+
+    document.getElementById("freeze-btn").addEventListener("click", () => {
       frozen = true;
-    }
+      document.getElementById("freeze-btn").disabled = true;
+      document.getElementById("freeze-btn").textContent = "Frozen at " + syncPairs.join(":");
+    });
 
-    setInterval(updateClock, 1000);
-    updateClock();
-
-    function submitFact(e) {
-      e.preventDefault();
+    function submitComment() {
       const name = document.getElementById("name").value || "Anonymous";
-      const location = document.getElementById("location").value;
-      const fact = document.getElementById("fact").value;
-      const comment = document.getElementById("comment").value;
-      const sync = pairElement.textContent;
+      const location = document.getElementById("location").value || "Unknown";
+      const fact = document.getElementById("fact").value || "-";
+      const comment = document.getElementById("comment").value || "No comment";
+      const time = syncPairs.join(":");
 
-      const message = `<div class='chat-message'><strong>${name}</strong> (${location || "Unknown"}) at pair <strong>${sync}</strong>: <em>${fact}</em><br>${comment}</div>`;
-      chatLog.innerHTML = message + chatLog.innerHTML;
+      const log = document.getElementById("chat-log");
+      const entry = document.createElement("div");
+      entry.className = "chat-entry";
+      entry.innerHTML = `<strong>${name}</strong> (${location}) [${fact}]<br><em>${comment}</em><br><small>Sync Pair: ${time}</small>`;
+      log.prepend(entry);
 
-      document.getElementById("factForm").reset();
+      document.getElementById("name").value = "";
+      document.getElementById("location").value = "";
+      document.getElementById("fact").value = "";
+      document.getElementById("comment").value = "";
     }
   </script>
 </body>
