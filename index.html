@@ -5,6 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Time of Timing</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .micro-sync {
+      font-size: 2rem;
+      color: white;
+      font-family: monospace;
+      text-align: center;
+      margin-top: 2rem;
+    }
+    .sync-label {
+      text-align: center;
+      font-size: 1.2rem;
+      color: #ccc;
+    }
+  </style>
 </head>
 <body class="dark-theme">
   <div class="container">
@@ -17,6 +31,30 @@
     <a href="subscribe.html" class="button">Subscribe & Join the Experiment</a>
 
     <p>Already a member? <a href="clock.html">Go to the Synchronicity Clock →</a></p>
+
+    <div class="micro-sync" id="syncDisplay">11</div>
+    <div class="sync-label">Now Syncing…</div>
   </div>
+
+  <script>
+    const syncDisplay = document.getElementById('syncDisplay');
+    const syncPairs = [];
+    for (let i = 11; i <= 99; i++) {
+      const firstDigit = Math.floor(i / 10);
+      const secondDigit = i % 10;
+      if (firstDigit > 0 && secondDigit > 0) {
+        syncPairs.push(i);
+      }
+    }
+
+    let currentIndex = 0;
+    function updateSyncDisplay() {
+      const pair = syncPairs[currentIndex];
+      const formatted = pair.toString();
+      syncDisplay.textContent = formatted;
+      currentIndex = (currentIndex + 1) % syncPairs.length;
+    }
+    setInterval(updateSyncDisplay, 150);
+  </script>
 </body>
 </html>
